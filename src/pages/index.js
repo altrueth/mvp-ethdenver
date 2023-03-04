@@ -45,7 +45,7 @@ export default function Home() {
           ?
           <Container className="min-vh-100">
             <h1>Dashboard</h1>
-            <p>You don't have any active donations yet.</p>
+            <p>You don&apos;t have any active donations yet.</p>
             <Link href="/donate" passHref>
               <Button variant="success">Stake & Donate</Button>
             </Link>
