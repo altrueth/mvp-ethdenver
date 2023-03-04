@@ -16,7 +16,7 @@ import Image from 'next/image'
 
 import jazzicon from '@metamask/jazzicon'
 
-import { toHex, truncateAddress } from "./utils";
+import { utils } from "../components/utils";
 
 import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.css'
@@ -41,7 +41,7 @@ export default function Home() {
   useEffect(() => {
     const provider = window.localStorage.getItem("provider");
     if (provider) activate(connectors[provider]);
-  }, []);
+  });
 
   useEffect(() => {
     // Update the state every 3 seconds
@@ -88,7 +88,7 @@ export default function Home() {
                 <Dropdown.Toggle id="dropdown-basic">
                   <div className={styles.idButton}>
                     <Identicon />&nbsp;
-                        {truncateAddress(account)}
+                        {utils.truncateAddress(account)}
                   </div>
                   </Dropdown.Toggle>
 
