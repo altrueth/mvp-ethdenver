@@ -3,13 +3,19 @@ import TextTransition, { presets } from "react-text-transition";
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
+import Navbar from 'react-bootstrap/Navbar';
+
 import Nav from 'react-bootstrap/Nav';
 import Dropdown from 'react-bootstrap/Dropdown';
 
 import { useWeb3React } from "@web3-react/core"
 import { connectors } from "../components/connectors"
+import Identicon from "../components/identicon"
 import Head from 'next/head'
 import Image from 'next/image'
+
+import jazzicon from '@metamask/jazzicon'
+
 import { toHex, truncateAddress } from "./utils";
 
 import { Inter } from 'next/font/google'
@@ -24,6 +30,9 @@ export default function Home() {
   const { active, account, library, connector, activate, deactivate } = useWeb3React()
   const [index, setIndex] = useState(0)
   const whatToDonate = ['Staking Rewards', 'DeFi Yields', 'Passively']
+  const iconSize = 24
+  const icon = account && jazzicon(iconSize, parseInt(account.slice(2, 10), 16))
+
 
   const setProvider = (type) => {
     window.localStorage.setItem("provider", type);
@@ -68,13 +77,19 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <Nav className="justify-content-end" activeKey="/home">
-          <Nav.Item>
+        <Navbar className="justify-content-end mb-auto" activeKey="/home">
+          <Container>
+            <Navbar.Toggle />
+            <Navbar.Collapse className="justify-content-end">
+              <Navbar.Text>
 
             {active
               ? <Dropdown>
-                  <Dropdown.Toggle variant="success" id="dropdown-basic">
-                    {truncateAddress(account)}
+                <Dropdown.Toggle id="dropdown-basic">
+                  <div className={styles.idButton}>
+                    <Identicon />&nbsp;
+                        {truncateAddress(account)}
+                  </div>
                   </Dropdown.Toggle>
 
                   <Dropdown.Menu>
@@ -82,14 +97,14 @@ export default function Home() {
                   </Dropdown.Menu>
                 </Dropdown>
 
-
               : <Button onClick={connect}>Connect Wallet</Button>}
 
-          </Nav.Item>
-        </Nav>
+              </Navbar.Text>
+            </Navbar.Collapse>
+          </Container>
+        </Navbar>
 
-
-        <Container>
+        <Container className="mb-auto">
           <Row>
             <h1 className={inter.className}>
               <div className={styles.floatleft}>Donate&nbsp;</div> 

@@ -3,7 +3,6 @@
   flex-direction: column;
   justify-content: space-between;
   /*align-items: center;*/
-  padding: 6rem;
   min-height: 100vh;
 }
 
@@ -284,4 +283,16 @@
 .heroParagraph{
   color: grey;
   font-size: 2em;
+}
+
+.idButton {
+  display: inline-block;
+  padding-right: 5px;
+  height: 24px
+}
+
+.idButton span {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: normal;
 }
