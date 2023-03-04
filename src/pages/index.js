@@ -4,11 +4,14 @@ import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Nav from 'react-bootstrap/Nav';
-import Card from 'react-bootstrap/Card';
+import Dropdown from 'react-bootstrap/Dropdown';
 
-
+import { useWeb3React } from "@web3-react/core"
+import { connectors } from "../components/connectors"
 import Head from 'next/head'
 import Image from 'next/image'
+import { toHex, truncateAddress } from "./utils";
+
 import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.css'
 
@@ -18,9 +21,18 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
-
+  const { active, account, library, connector, activate, deactivate } = useWeb3React()
   const [index, setIndex] = useState(0)
   const whatToDonate = ['Staking Rewards', 'DeFi Yields', 'Passively']
+
+  const setProvider = (type) => {
+    window.localStorage.setItem("provider", type);
+  };
+
+  useEffect(() => {
+    const provider = window.localStorage.getItem("provider");
+    if (provider) activate(connectors[provider]);
+  }, []);
 
   useEffect(() => {
     // Update the state every 3 seconds
@@ -33,6 +45,20 @@ export default function Home() {
     return (() => clearInterval(interval)) 
   })
 
+  async function connect() {
+    activate(connectors.injected);
+    setProvider("injected");
+  }
+
+  const refreshState = () => {
+    window.localStorage.setItem("provider", undefined);
+  };
+
+  const disconnect = () => {
+    refreshState();
+    deactivate();
+  };
+
   return (
     <>
       <Head>
@@ -44,7 +70,21 @@ export default function Home() {
       <main className={styles.main}>
         <Nav className="justify-content-end" activeKey="/home">
           <Nav.Item>
-            <Button>Connect Wallet</Button>
+
+            {active
+              ? <Dropdown>
+                  <Dropdown.Toggle variant="success" id="dropdown-basic">
+                    {truncateAddress(account)}
+                  </Dropdown.Toggle>
+
+                  <Dropdown.Menu>
+                    <Dropdown.Item onClick={disconnect}>Disconnect</Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+
+
+              : <Button onClick={connect}>Connect Wallet</Button>}
+
           </Nav.Item>
         </Nav>
 
