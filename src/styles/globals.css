@@ -99,3 +99,20 @@ a {
     color-scheme: dark;
   }
 }
+
+.card-img-top {
+  width: inherit;
+}
+
+.ircImage .card-img-top {
+  width: 100px;
+}
+
+.hopeImage .card-img-top  {
+  width: 100px;
+}
+
+.childrenImage .card-img-top  {
+  width: 150px;
+}
+
