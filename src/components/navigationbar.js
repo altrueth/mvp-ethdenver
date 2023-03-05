@@ -21,7 +21,7 @@ export default function NavigationBar() {
     useEffect(() => {
         const provider = window.localStorage.getItem("provider");
         if (provider) activate(connectors[provider]);
-    });
+    }, []);
 
     async function connect() {
         activate(connectors.injected);
@@ -40,6 +40,7 @@ export default function NavigationBar() {
     return (
         <Navbar className="justify-content-end mb-auto">
             <Container>
+                <Navbar.Brand href="/"><h1>AltruETH</h1></Navbar.Brand>
                 <Navbar.Toggle />
                 <Navbar.Collapse className="justify-content-end">
                     <Navbar.Text>

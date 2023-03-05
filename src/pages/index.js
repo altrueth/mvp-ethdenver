@@ -25,7 +25,7 @@ const inter = Inter({ subsets: ['latin'] })
 export default function Home() {
   const { active } = useWeb3React()
 
-  const whatToDonate = ['Staking Rewards', 'DeFi Yields', 'Passively']
+  const whatToDonate = ['Staking Rewards', 'DeFi Yields', 'Passively', 'Efficiently']
   const [index, setIndex] = useState(0)
   const [donations, setDonations] = useState([])
 
@@ -34,13 +34,16 @@ export default function Home() {
     const interval = setInterval(() => {
       // Loop through indices of array modulus its length
       setIndex((index + 1) % whatToDonate.length)
+      console.log(index)
     }, 3000)
-
-    var d = JSON.parse(window.localStorage.getItem("donations"))
-    setDonations(d);
 
     // Clean up
     return (() => clearInterval(interval)) 
+  })
+
+  useEffect(() => {
+    var d = JSON.parse(window.localStorage.getItem("donations"))
+    setDonations(d);
   }, [])
 
   function copyToClipboard(event, donation) {
