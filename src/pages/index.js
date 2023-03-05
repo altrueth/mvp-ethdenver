@@ -69,7 +69,7 @@ export default function Home() {
                   </tr>
                 </thead>
                 <tbody>
-                  {donations.map((donation) => (
+                  {donations.map(donation => (
                     <tr key={donation.splitContract}>
                       <td>{donation.orgName}</td>
                       <td className="center">{donation.percentage}%</td>
