@@ -38,7 +38,7 @@ export default function NavigationBar() {
     };
 
     return (
-        <Navbar className="justify-content-end mb-auto" activeKey="/home">
+        <Navbar className="justify-content-end mb-auto">
             <Container>
                 <Navbar.Toggle />
                 <Navbar.Collapse className="justify-content-end">
