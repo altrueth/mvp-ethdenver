@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useWeb3React } from "@web3-react/core"
-import { useSplitsClient } from '@0xsplits/splits-sdk-react'
+// import { useSplitsClient } from '@0xsplits/splits-sdk-react'
+import { SplitsClient } from '@0xsplits/splits-sdk'
 
 import Button from 'react-bootstrap/Button'
 import Card from 'react-bootstrap/Card'
@@ -17,12 +18,12 @@ import NavigationBar from "../components/navigationbar"
 import { animeIcons } from '@/components/animations'
 import { orgs } from "../components/orgs"
 
-import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/css/bootstrap.min.css'
 import styles from '@/styles/Home.module.css'
 
 export default function Donate() {
     const { account, library } = useWeb3React()
-    const signer = library?.getSigner?.();
+    const signer = library?.getSigner?.()
 
     const [percentage, setPercentage] = React.useState(10);
     const [charity, setCharity] = React.useState(null);
@@ -31,13 +32,19 @@ export default function Donate() {
     const [splitter, setSplitter] = React.useState('Pending...');
     const [successMsg, setSuccessMsg] = React.useState(null);
 
+    const splitsClient = new SplitsClient({
+        chainId: 5,  // Goerli Ethereum Testnet
+        provider: library,
+        signer: signer,
+    })
+
     const selectCharity = (selection) => {
-        console.log('button clicked')
         setCharity(selection)
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault()
+
         setSubmitForm(true)
 
         setStatus(animeIcons.WAIT)
@@ -57,13 +64,14 @@ export default function Donate() {
             controller: account
         }
 
-        const splitsClient = useSplitsClient({
-            chainId: 5,  // Goerli Ethereum Testnet
-            provider: library,
-            signer: signer,
-        })
-
         const response = await splitsClient.createSplit(args)
+
+        // For testing purposes only
+        // const response = {
+        //     splitId: '0x0000000000000000000000000000000000000000',
+        //     event: null
+        // }
+
         console.log(response)
         setSplitter(response.splitId)
         
@@ -128,10 +136,12 @@ export default function Donate() {
                             </Row>
                             <Row className="pt-3">
                                 <Table>
-                                    <tr>
-                                        <td className={styles.bold}>Splitter Contract:</td>
-                                        <td>{splitter}</td>
-                                    </tr>
+                                    <tbody>
+                                        <tr>
+                                            <td className={styles.bold}>Splitter Contract:</td>
+                                            <td>{splitter}</td>
+                                        </tr>
+                                    </tbody>
                                 </Table>
                             </Row>
                             <Row className="pt-3">
