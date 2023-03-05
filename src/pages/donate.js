@@ -10,6 +10,7 @@ import Container from 'react-bootstrap/Container'
 import Form from 'react-bootstrap/Form'
 import Row from 'react-bootstrap/Row'
 import InputGroup from 'react-bootstrap/InputGroup'
+import Link from 'next/link';
 
 import MyHead from "../components/head"
 import NavigationBar from "../components/navigationbar"
@@ -28,7 +29,7 @@ export default function Donate() {
     const [submitForm, setSubmitForm] = React.useState(null);
     const [status, setStatus] = useState(animeIcons.START);
     const [splitter, setSplitter] = React.useState('Pending...');
-
+    const [successMsg, setSuccessMsg] = React.useState(null);
 
     const splitsClient = useSplitsClient({
         chainId: 5,  // Goerli Ethereum Testnet
@@ -38,17 +39,19 @@ export default function Donate() {
 
     const selectCharity = (selection) => {
         console.log('button clicked')
-        setCharity(selection);
+        setCharity(selection)
     };
 
     const handleSubmit = async (event) => {
-        event.preventDefault();
-        setSubmitForm(true);
+        event.preventDefault()
+        setSubmitForm(true)
+
+        setStatus(animeIcons.WAIT)
 
         const args = {
             recipients: [
                 {
-                    address: orgs[charity - 1].address,
+                    address: orgs[charity].address,
                     percentAllocation: parseInt(percentage)
                 },
                 {
@@ -66,15 +69,24 @@ export default function Donate() {
         
         const donation = {
             percentage: percentage,
-            orgName: orgs[charity - 1].name,
-            orgAddress: orgs[charity - 1].address
+            orgName: orgs[charity].name,
+            orgAddress: orgs[charity].address,
+            splitContract: response.splitId
         }
 
         var donations = JSON.parse(localStorage.getItem("donations"))
+        if (typeof donations === 'undefined') {
+            donations = []
+        }
+        donations.push(donation)
 
         window.localStorage.setItem("donations", JSON.stringify(donations));
 
-        alert('Transaction completed')
+        setStatus(animeIcons.DONE)
+        setSuccessMsg(
+            <p>When setting up your Eth2.0 Validator, provide the split contract address
+            above as the recipient address as the recipient for the staking rewards.</p>
+        )
 
     }
 
@@ -89,22 +101,24 @@ export default function Donate() {
                         <>
                             <Row>
                                 <Table>
-                                    <tr>
-                                        <td className={styles.bold}>Donor Address:</td>
-                                        <td>{account}</td>
-                                    </tr>
-                                    <tr>
-                                        <td className={styles.bold}>Percentage Donation:</td>
-                                        <td>{percentage}%</td>
-                                    </tr>
-                                    <tr>
-                                        <td className={styles.bold}>Recipient Organization:</td>
-                                        <td>{orgs[charity + 1].name}</td>
-                                    </tr>
-                                    <tr>
-                                        <td className={styles.bold}>Recipient Address:</td>
-                                        <td>{orgs[charity + 1].address}</td>
-                                    </tr>
+                                    <tbody>
+                                        <tr>
+                                            <td className={styles.bold}>Donor Address:</td>
+                                            <td>{account}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className={styles.bold}>Percentage Donation:</td>
+                                            <td>{percentage}%</td>
+                                        </tr>
+                                        <tr>
+                                            <td className={styles.bold}>Recipient Organization:</td>
+                                            <td>{orgs[charity].name}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className={styles.bold}>Recipient Address:</td>
+                                            <td>{orgs[charity].address}</td>
+                                        </tr>
+                                    </tbody>
                                 </Table>
                             </Row>
                             <Row>
@@ -119,6 +133,9 @@ export default function Donate() {
                                         <td>{splitter}</td>
                                     </tr>
                                 </Table>
+                            </Row>
+                            <Row className="pt-3">
+                                <span>{successMsg}</span>
                             </Row>
                             <Link href="/" passHref>
                                 <Button className="mt-5">Back</Button>
@@ -151,19 +168,19 @@ export default function Donate() {
                                 <Form.Label className="pt-5">What charity would you like to donate to?</Form.Label>
                                 <Form.Group as={Row} className="pb-3">
                                     <Col md="3">
-                                        <Card className={charity == 1 ? 'border-primary' : ''}>
+                                        <Card className={charity == 0 ? 'border-primary' : ''}>
                                             <Card.Img variant="top" src="https://www.guidestar.org/ViewEdoc.aspx?eDocId=8097656&approved=True" className="p-4" />
                                             <Card.Body>
                                                 <Card.Title>Doctors Without Borders</Card.Title>
                                                 <Card.Text>
                                                     Provide impartial medical relief to the victims of war, disease, and natural or man-made disaster, without regard to race, religion, or political affiliation.
                                                 </Card.Text>
-                                                <Button variant="primary" onClick={() => selectCharity(1)}>Choose</Button>
+                                                <Button variant="primary" onClick={() => selectCharity(0)}>Choose</Button>
                                             </Card.Body>
                                         </Card>
                                     </Col>
                                     <Col md="3">
-                                        <Card className={charity == 2 ? 'border-primary' : ''}>
+                                        <Card className={charity == 1 ? 'border-primary' : ''}>
                                             <div className='d-flex justify-content-center ircImage'>
                                                 <Card.Img variant="top" src="https://static.tgbwidget.com/organization_logo/331410c2-f30d-479a-a57a-5ad2c9e498f2.jpg" />
                                             </div>
@@ -172,12 +189,12 @@ export default function Donate() {
                                                 <Card.Text>
                                                     IRC helps people affected by humanitarian crises—including the climate crisis—to survive, recover, and rebuild their lives and prosper.
                                                 </Card.Text>
-                                                <Button variant="primary" onClick={() => selectCharity(2)}>Choose</Button>
+                                                <Button variant="primary" onClick={() => selectCharity(1)}>Choose</Button>
                                             </Card.Body>
                                         </Card>
                                     </Col>
                                     <Col md="3">
-                                        <Card className={charity == 3 ? 'border-primary' : ''}>
+                                        <Card className={charity == 2 ? 'border-primary' : ''}>
                                             <div className='d-flex justify-content-center hopeImage'>
                                                 <Card.Img variant="top" src="https://static.tgbwidget.com/ProjectHOPE.jpg" />
                                             </div>
@@ -186,12 +203,12 @@ export default function Donate() {
                                                 <Card.Text>
                                                     Project HOPE places power in the hands of local health care workers to save lives around the world. We work on the front lines of the world’s health challenges, partnering ...
                                                 </Card.Text>
-                                                <Button variant="primary" onClick={() => selectCharity(3)}>Choose</Button>
+                                                <Button variant="primary" onClick={() => selectCharity(2)}>Choose</Button>
                                             </Card.Body>
                                         </Card>
                                     </Col>
                                     <Col md="3">
-                                        <Card className={charity == 4 ? 'border-primary' : ''}>
+                                        <Card className={charity == 3 ? 'border-primary' : ''}>
                                             <div className='d-flex justify-content-center childrenImage'>
                                                 <Card.Img variant="top" src="https://www.guidestar.org/ViewEdoc.aspx?eDocId=7911901&approved=True" />
                                             </div>
@@ -200,7 +217,7 @@ export default function Donate() {
                                                 <Card.Text>
                                                     Save the Children believes every child deserves a future. In the United States and around the world, we work every day to give children a healthy start in life ...
                                                 </Card.Text>
-                                                <Button variant="primary" onClick={() => selectCharity(4)}>Choose</Button>
+                                                <Button variant="primary" onClick={() => selectCharity(3)}>Choose</Button>
                                             </Card.Body>
                                         </Card>
                                     </Col>
