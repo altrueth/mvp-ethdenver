@@ -29,6 +29,31 @@ AltruETH is also designed to be an open source project and we aim that it can be
 
 An alpha version of the AltruETH app is available online at https://altrueth.vercel.app for anyone to test and provide feedback. Give it a try!
 
+<img
+  src="./docs/landing-page.png"
+  alt="Landing Page"
+  width="640"
+  style="display: inline-block; margin: 0 auto;">
+  
+ 
+<img
+  src="./docs/choose-to-donate.png"
+  alt="Choose what and where to donate"
+  width="640"
+  style="display: inline-block; margin: 0 auto;">
+  
+<img
+  src="./docs/deploy.png"
+  alt="Deploy contract"
+  width="640"
+  style="display: inline-block; margin: 0 auto;">
+  
+<img
+  src="./docs/dashboard.png"
+  alt="Dashboard"
+  width="640"
+  style="display: inline-block; margin: 0 auto;">
+
 ## 🛠 Architecture
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
