@@ -33,7 +33,7 @@ export default function Donate() {
     const [successMsg, setSuccessMsg] = React.useState(null);
 
     const splitsClient = new SplitsClient({
-        chainId: 5,  // Goerli Ethereum Testnet
+        chainId: 80001,  // 5 - Goerli Ethereum Testnet
         provider: library,
         signer: signer,
     })
