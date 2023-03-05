@@ -11,7 +11,6 @@ import Identicon from "../components/identicon"
 import styles from '@/styles/Home.module.css'
 
 
-
 export default function NavigationBar() {
     const { active, account, library, connector, activate, deactivate } = useWeb3React()
 

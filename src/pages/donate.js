@@ -1,53 +1,81 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import { useWeb3React } from "@web3-react/core"
+import { useSplitsClient } from '@0xsplits/splits-sdk-react'
 
-import Button from 'react-bootstrap/Button';
-import Card from 'react-bootstrap/Card';
-import Table from 'react-bootstrap/Table';
-import Col from 'react-bootstrap/Col';
-import Container from 'react-bootstrap/Container';
-import Form from 'react-bootstrap/Form';
-import Row from 'react-bootstrap/Row';
-import InputGroup from 'react-bootstrap/InputGroup';
+import Button from 'react-bootstrap/Button'
+import Card from 'react-bootstrap/Card'
+import Table from 'react-bootstrap/Table'
+import Col from 'react-bootstrap/Col'
+import Container from 'react-bootstrap/Container'
+import Form from 'react-bootstrap/Form'
+import Row from 'react-bootstrap/Row'
+import InputGroup from 'react-bootstrap/InputGroup'
 
 import MyHead from "../components/head"
 import NavigationBar from "../components/navigationbar"
+import { animeIcons } from '@/components/animations'
+import { orgs } from "../components/orgs"
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import styles from '@/styles/Home.module.css'
 
 export default function Donate() {
-    const { account } = useWeb3React()
-    const orgs = [
-        {
-            name: 'Doctors Without Borders',
-            address: '0xa296e4d394b7dfe76b384717a7e0a26564f425a2'
-        },
-        {
-            name: 'International Rescue Committee',
-            address: '0x8324cd01366f447df493fa44e32ce2a5e0cbd245'
-        },
-        {
-            name: 'Project HOPE',
-            address: '0x90d824140d1208f20cab9be89162d3304823f405'
-        },
-        {
-            name: 'Save the Children',
-            address: '0x2c3ca26653c360d88165572aab8eedee362fc84e'
-        }
-    ]
+    const { account, library } = useWeb3React()
+    const signer = library?.getSigner?.();
+
     const [percentage, setPercentage] = React.useState(10);
     const [charity, setCharity] = React.useState(null);
     const [submitForm, setSubmitForm] = React.useState(null);
+    const [status, setStatus] = useState(animeIcons.START);
+    const [splitter, setSplitter] = React.useState('Pending...');
+
+
+    const splitsClient = useSplitsClient({
+        chainId: 5,  // Goerli Ethereum Testnet
+        provider: library,
+        signer: signer,
+    })
 
     const selectCharity = (selection) => {
         console.log('button clicked')
         setCharity(selection);
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
         setSubmitForm(true);
+
+        const args = {
+            recipients: [
+                {
+                    address: orgs[charity - 1].address,
+                    percentAllocation: parseInt(percentage)
+                },
+                {
+                    address: account,
+                    percentAllocation: 100 - parseInt(percentage)
+                }
+            ],
+            distributorFeePercent: 0,
+            controller: account
+        }
+
+        const response = await splitsClient.createSplit(args)
+        console.log(response)
+        setSplitter(response.splitId)
+        
+        const donation = {
+            percentage: percentage,
+            orgName: orgs[charity - 1].name,
+            orgAddress: orgs[charity - 1].address
+        }
+
+        var donations = JSON.parse(localStorage.getItem("donations"))
+
+        window.localStorage.setItem("donations", JSON.stringify(donations));
+
+        alert('Transaction completed')
+
     }
 
     return (
@@ -58,26 +86,44 @@ export default function Donate() {
                 <Container className="min-vh-100">
                     {submitForm
                         ?
-                        <Row>
-                            <Table>
-                                <tr>
-                                    <td>Donor Address:</td>
-                                    <td>{account}</td>
-                                </tr>
-                                <tr>
-                                    <td>Percentage Donation:</td>
-                                    <td>{percentage}%</td>
-                                </tr>
-                                <tr>
-                                    <td>Recipient Organization:</td>
-                                    <td>{orgs[charity + 1].name}</td>
-                                </tr>
-                                <tr>
-                                    <td>Recipient Address:</td>
-                                    <td>{orgs[charity + 1].address}</td>
-                                </tr>
-                            </Table>
-                        </Row>
+                        <>
+                            <Row>
+                                <Table>
+                                    <tr>
+                                        <td className={styles.bold}>Donor Address:</td>
+                                        <td>{account}</td>
+                                    </tr>
+                                    <tr>
+                                        <td className={styles.bold}>Percentage Donation:</td>
+                                        <td>{percentage}%</td>
+                                    </tr>
+                                    <tr>
+                                        <td className={styles.bold}>Recipient Organization:</td>
+                                        <td>{orgs[charity + 1].name}</td>
+                                    </tr>
+                                    <tr>
+                                        <td className={styles.bold}>Recipient Address:</td>
+                                        <td>{orgs[charity + 1].address}</td>
+                                    </tr>
+                                </Table>
+                            </Row>
+                            <Row>
+                                <Col>
+                                    <span>{status}</span>&nbsp; Deploy Split Contract
+                                </Col>
+                            </Row>
+                            <Row className="pt-3">
+                                <Table>
+                                    <tr>
+                                        <td className={styles.bold}>Splitter Contract:</td>
+                                        <td>{splitter}</td>
+                                    </tr>
+                                </Table>
+                            </Row>
+                            <Link href="/" passHref>
+                                <Button className="mt-5">Back</Button>
+                            </Link>
+                        </>
                         :
                         <>
                             <h1>Donate</h1>

@@ -1,6 +1,8 @@
 import '@/styles/globals.css'
 import { StrictMode } from 'react'
 import { Web3ReactProvider } from '@web3-react/core'
+import { SplitsProvider } from '@0xsplits/splits-sdk-react'
+
 import { ethers } from 'ethers'
 
 function getLibrary(provider) {
@@ -13,7 +15,9 @@ export default function App({ Component, pageProps }) {
   return (
     <StrictMode>
       <Web3ReactProvider getLibrary={getLibrary}>
-        <Component {...pageProps} />
+        <SplitsProvider> 
+          <Component {...pageProps} />
+        </SplitsProvider>
       </Web3ReactProvider>
     </StrictMode>
   )

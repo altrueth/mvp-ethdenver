@@ -3,12 +3,16 @@ import TextTransition, { presets } from "react-text-transition";
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
+import Table from 'react-bootstrap/Table';
 
 import { useWeb3React } from "@web3-react/core"
 import NavigationBar from "../components/navigationbar"
 import MyHead from "../components/head"
+import { utils } from "../components/utils";
+import copyIcon from "../../public/copy-icon.svg"
 
 import Link from 'next/link';
+import Image from 'next/image';
 
 import { Inter } from 'next/font/google'
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -23,6 +27,7 @@ export default function Home() {
 
   const whatToDonate = ['Staking Rewards', 'DeFi Yields', 'Passively']
   const [index, setIndex] = useState(0)
+  const [donations, setDonations] = useState([])
 
   useEffect(() => {
     // Update the state every 3 seconds
@@ -31,9 +36,17 @@ export default function Home() {
       setIndex((index + 1) % whatToDonate.length)
     }, 3000)
 
+    var d = JSON.parse(window.localStorage.getItem("donations"))
+    setDonations(d);
+
     // Clean up
     return (() => clearInterval(interval)) 
-  })
+  }, [])
+
+  function copyToClipboard(event, donation) {
+    event.preventDefault();
+    navigator.clipboard.writeText(donation.splitContract)
+  }
 
   return (
     <>
@@ -45,9 +58,34 @@ export default function Home() {
           ?
           <Container className="min-vh-100">
             <h1>Dashboard</h1>
-            <p>You don&apos;t have any active donations yet.</p>
+            {donations
+              ? <Table>
+                <thead>
+                  <tr>
+                    <td>Organization</td>
+                    <td className="center">Percentage</td>
+                    <td className="center">Contract</td>
+                    <td className="center">Active</td>
+                  </tr>
+                </thead>
+                {donations.map((donation) => (
+                  <tr>
+                    <td>{donation.orgName}</td>
+                    <td className="center">{donation.percentage}%</td>
+                    <td className="center">
+                      {utils.truncateAddress(donation.splitContract)}
+                      <a href="#" onClick={(e)=>copyToClipboard(e, donation)}>
+                        <Image src={copyIcon} width="15" height="15"/>
+                      </a>
+                    </td>
+                    <td className="center">✅</td>
+                  </tr>
+                ))}
+              </Table>
+              : <p>You don&apos;t have any active donations yet.</p>
+            }
             <Link href="/donate" passHref>
-              <Button variant="success">Stake & Donate</Button>
+              <Button variant="success" className="mt-5">Stake & Donate</Button>
             </Link>
           </Container>
           :

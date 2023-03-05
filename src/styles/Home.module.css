@@ -295,3 +295,7 @@
   vertical-align: middle;
   line-height: normal;
 }
+
+.bold {
+  font-weight: bold;
+}
