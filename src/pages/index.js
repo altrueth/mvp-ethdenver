@@ -59,28 +59,30 @@ export default function Home() {
           <Container className="min-vh-100">
             <h1>Dashboard</h1>
             {donations
-              ? <Table>
+              ? <Table striped>
                 <thead>
                   <tr>
-                    <td>Organization</td>
-                    <td className="center">Percentage</td>
-                    <td className="center">Contract</td>
-                    <td className="center">Active</td>
+                    <td className={styles.bold}>Organization</td>
+                    <td className={`center ${styles.bold}`}>Percentage</td>
+                    <td className={`center ${styles.bold}`}>Contract</td>
+                    <td className={`center ${styles.bold}`}>Active</td>
                   </tr>
                 </thead>
-                {donations.map((donation) => (
-                  <tr>
-                    <td>{donation.orgName}</td>
-                    <td className="center">{donation.percentage}%</td>
-                    <td className="center">
-                      {utils.truncateAddress(donation.splitContract)}
-                      <a href="#" onClick={(e)=>copyToClipboard(e, donation)}>
-                        <Image src={copyIcon} width="15" height="15"/>
-                      </a>
-                    </td>
-                    <td className="center">✅</td>
-                  </tr>
-                ))}
+                <tbody>
+                  {donations.map((donation) => (
+                    <tr key={donation.splitContract}>
+                      <td>{donation.orgName}</td>
+                      <td className="center">{donation.percentage}%</td>
+                      <td className="center">
+                        {utils.truncateAddress(donation.splitContract)}&nbsp;&nbsp;
+                        <a href="#" onClick={(e)=>copyToClipboard(e, donation)}>
+                          <Image src={copyIcon} width="15" height="15" alt="Copy to clipboard"/>
+                        </a>
+                      </td>
+                      <td className="center">✅</td>
+                    </tr>
+                  ))}
+                </tbody>
               </Table>
               : <p>You don&apos;t have any active donations yet.</p>
             }
