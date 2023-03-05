@@ -31,12 +31,6 @@ export default function Donate() {
     const [splitter, setSplitter] = React.useState('Pending...');
     const [successMsg, setSuccessMsg] = React.useState(null);
 
-    const splitsClient = useSplitsClient({
-        chainId: 5,  // Goerli Ethereum Testnet
-        provider: library,
-        signer: signer,
-    })
-
     const selectCharity = (selection) => {
         console.log('button clicked')
         setCharity(selection)
@@ -62,6 +56,12 @@ export default function Donate() {
             distributorFeePercent: 0,
             controller: account
         }
+
+        const splitsClient = useSplitsClient({
+            chainId: 5,  // Goerli Ethereum Testnet
+            provider: library,
+            signer: signer,
+        })
 
         const response = await splitsClient.createSplit(args)
         console.log(response)
@@ -222,7 +222,7 @@ export default function Donate() {
                                         </Card>
                                     </Col>
                                 </Form.Group>
-                                    
+
                                 <Button variant="primary" type="submit" >
                                     Submit
                                 </Button>
