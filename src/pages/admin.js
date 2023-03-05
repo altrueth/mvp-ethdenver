@@ -8,14 +8,24 @@ import { SplitsClient } from '@0xsplits/splits-sdk'
 
 import { orgs } from "../components/orgs"
 import MyHead from "../components/head"
-
+import { connectors } from "../components/connectors"
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import styles from '@/styles/Home.module.css'
 
 
 export default function Admin() {
-    const { account, library } = useWeb3React()
+    const { account, library, activate } = useWeb3React()
+
+    const setProvider = (type) => {
+        window.localStorage.setItem("provider", type);
+    };
+
+    useEffect(() => {
+        const provider = window.localStorage.getItem("provider");
+        if (provider) activate(connectors[provider]);
+    }, []);
+
     const signer = library?.getSigner?.()
 
     const [donations, setDonations] = useState([])
@@ -42,10 +52,12 @@ export default function Admin() {
     // }
 
     const donation = {
-        percentage: 15,
-        orgName: 'Save the Children',
+        percentage: 10,
+        orgName: 'Project HOPE',
         orgAddress: '0x98fE6b33eb2ecf7875B3010879bFEA9d6c4CACEC',
-        splitContract: '0x226736C7D26c914d7c4dbb6964e9a52C4Ad6004b'
+        splitContract: '0x08412c0E9B1B0Ad232dE0473895786fA5f45313F',
+        network: 'Polygon',
+        amount: 60
     }
 
     function addEntry() {

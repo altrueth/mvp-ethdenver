@@ -28,6 +28,7 @@ export default function Home() {
   const whatToDonate = ['Staking Rewards', 'DeFi Yields', 'Passively', 'Efficiently']
   const [index, setIndex] = useState(0)
   const [donations, setDonations] = useState([])
+  const [totalAmount, setTotalAmount] = useState(0);
 
   useEffect(() => {
     // Update the state every 3 seconds
@@ -44,6 +45,19 @@ export default function Home() {
   useEffect(() => {
     var d = JSON.parse(window.localStorage.getItem("donations"))
     setDonations(d);
+    var a = 0;
+    for (const e of d) {
+      a += e.amount;
+    }
+    const formatter = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+
+      // These options are needed to round to whole numbers if that's what you want.
+      //minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+      //maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
+    });
+    setTotalAmount(formatter.format(a));
   }, [])
 
   function copyToClipboard(event, donation) {
@@ -62,31 +76,39 @@ export default function Home() {
           <Container className="min-vh-100">
             <h1>Dashboard</h1>
             {donations
-              ? <Table striped>
-                <thead>
-                  <tr>
-                    <td className={styles.bold}>Organization</td>
-                    <td className={`center ${styles.bold}`}>Percentage</td>
-                    <td className={`center ${styles.bold}`}>Contract</td>
-                    <td className={`center ${styles.bold}`}>Active</td>
-                  </tr>
-                </thead>
-                <tbody>
-                  {donations.map(donation => (
-                    <tr key={donation.splitContract}>
-                      <td>{donation.orgName}</td>
-                      <td className="center">{donation.percentage}%</td>
-                      <td className="center">
-                        {utils.truncateAddress(donation.splitContract)}&nbsp;&nbsp;
-                        <a href="#" onClick={(e)=>copyToClipboard(e, donation)}>
-                          <Image src={copyIcon} width="15" height="15" alt="Copy to clipboard"/>
-                        </a>
-                      </td>
-                      <td className="center">✅</td>
+              ?
+              <>
+                <p>You have donated <span className={styles.amount}>{totalAmount}</span> to charities so far. You are awesome! 🙌</p>
+                <Table striped>
+                  <thead>
+                    <tr>
+                      <td className={styles.bold}>Organization</td>
+                      <td className={`right ${styles.bold}`}>Amount<br/>Donated</td>
+                      <td className={`center ${styles.bold}`}>Percentage</td>
+                      <td className={`center ${styles.bold}`}>Network</td>
+                      <td className={`center ${styles.bold}`}>Contract</td>
+                      <td className={`center ${styles.bold}`}>Active</td>
                     </tr>
-                  ))}
-                </tbody>
-              </Table>
+                  </thead>
+                  <tbody>
+                    {donations.map(donation => (
+                      <tr key={donation.splitContract}>
+                        <td>{donation.orgName}</td>
+                        <td className="right">{donation.amount ? `$${donation.amount}` : ''}</td>
+                        <td className="center">{donation.percentage}%</td>
+                        <td className="center">{donation.network}</td>
+                        <td className="center">
+                          {utils.truncateAddress(donation.splitContract)}&nbsp;&nbsp;
+                          <a href="#" onClick={(e)=>copyToClipboard(e, donation)}>
+                            <Image src={copyIcon} width="15" height="15" alt="Copy to clipboard"/>
+                          </a>
+                        </td>
+                        <td className="center">✅</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </>
               : <p>You don&apos;t have any active donations yet.</p>
             }
             <Link href="/donate" passHref>
