@@ -35,7 +35,6 @@ export default function Home() {
     const interval = setInterval(() => {
       // Loop through indices of array modulus its length
       setIndex((index + 1) % whatToDonate.length)
-      console.log(index)
     }, 3000)
 
     // Clean up
@@ -46,8 +45,10 @@ export default function Home() {
     var d = JSON.parse(window.localStorage.getItem("donations"))
     setDonations(d);
     var a = 0;
-    for (const e of d) {
-      a += e.amount;
+    if (d && d.length) {
+      for (const e of d) {
+        a += e.amount;
+      }
     }
     const formatter = new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -84,7 +85,7 @@ export default function Home() {
                     <tr>
                       <td className={styles.bold}>Organization</td>
                       <td className={`right ${styles.bold}`}>Amount<br/>Donated</td>
-                      <td className={`center ${styles.bold}`}>Percentage</td>
+                      <td className={`center ${styles.bold}`}>Donation<br/>Allocation</td>
                       <td className={`center ${styles.bold}`}>Network</td>
                       <td className={`center ${styles.bold}`}>Contract</td>
                       <td className={`center ${styles.bold}`}>Active</td>
