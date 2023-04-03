@@ -1,3 +1,5 @@
+*Note: this repository was set up as an entry to ethDenver 2023 in the Public Goods category*
+
 # AltruETH
 
 AltruETH enables Ethereum users earning on-chain passive income (ETH2.0 staking and DeFi yield) to automatically donate a percentage of their income to charitable organizations of their choice. AltruETH aims to allow users to do good and feel good by providing an intuitive user interface and removing much of the friction that exists today in periodically making charitable donations to a variety of non-profit organizations and initiatives.
